@@ -3,13 +3,14 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from run import db
 from slugify import slugify
 from sqlalchemy.exc import IntegrityError
+from flask import url_for
 
 class User(db.Model, UserMixin):
     __tablename__ = 'blog_user'
 
-    id = db.Column(db.Integer, primeary_key = True)
+    id = db.Column(db.Integer, primary_key = True)
     name = db.Column(db.String(80), nullable = False)
-    email = db.Column(db.String(256), unique = True, Nullable = False)
+    email = db.Column(db.String(256), unique = True, nullable = False)
     password = db.Column(db.String(128), nullable = False)
     is_admin = db.Column(db.Boolean, default = False)
 
@@ -37,8 +38,8 @@ class User(db.Model, UserMixin):
 
 
 class Post(db.Model):
-    id = db.Column(db.Integet, primary_key = True)
-    user_id = db.Coñumn(db.Integer, db.ForeignKey('blog_user.id', ondelete = 'CASCADE'), nullable = False)
+    id = db.Column(db.Integer, primary_key = True)
+    user_id = db.Column(db.Integer, db.ForeignKey('blog_user.id', ondelete = 'CASCADE'), nullable = False)
     title = db.Column(db.String(256), nullable = False)
     title_slug = db.Column(db.String(256), nullable = False)
     content = db.Column(db.Text)

@@ -1,20 +1,19 @@
 from flask import Flask, render_template, request, url_for, redirect, abort
 from forms import SignupForm, PostForm, LoginForm
 from flask_login import LoginManager, current_user, login_user, logout_user, login_required
-from models import users, get_user, User, Post
 from werkzeug.urls import url_parse
 from flask_sqlalchemy import SQLAlchemy
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'mikey'
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://scott:@localhost/blogdb'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://root:@localhost/blogdb'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False 
 
 login_manager = LoginManager(app)
 login_manager.login_view = "login"
 db = SQLAlchemy(app)
 
-from models import User
+from models import User, Post
 
 
 posts = []
@@ -41,8 +40,8 @@ def post_form(post_id):
         title_slug = form.title_slug.data
         content = form.content.data 
 
-        post = {'title': title, 'title_slug': title_slug, 'content': content}
-        posts.append(post)
+        post = Post(user_id = current_user.id, title = title, content = content)
+        posts.save()
 
         return redirect(url_for('index'))
     return render_template('admin/post_form.html', form = form)
